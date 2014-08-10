@@ -18,6 +18,5 @@
 -(BRGBall *)initAt:(CGPoint)position;
 -(void)fall;
 -(void)stopFall;
--(void)updatePosition:(CFTimeInterval)timeSinceLast;
 
 @end

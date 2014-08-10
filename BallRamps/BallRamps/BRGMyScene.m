@@ -22,11 +22,14 @@
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
-    if ([self.currentLevel hasFallingBall]) {
-        return;
-    } else if ([self.currentLevel isBallSetToFall]) {
-        [self.currentLevel shootBall];
-    }
+//    if ([self.currentLevel hasFallingBall]) {
+//        return;
+//    } else if ([self.currentLevel isBallSetToFall]) {
+//        [self.currentLevel shootBall];
+//    }
+    
+    [self.currentLevel prepareAnotherBall];
+    
     
     // si el cañon está presto para disparar, es el momento para dibujar las rampas
 //    UITouch *touch = [touches anyObject];
@@ -40,7 +43,7 @@
 
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
-    [self.currentLevel updateBall: currentTime];
+    //[self.currentLevel updateBall: currentTime];
 }
 
 @end

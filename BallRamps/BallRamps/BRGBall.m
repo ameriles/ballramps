@@ -8,8 +8,6 @@
 
 #import "BRGBall.h"
 
-static const int kBallSpeed = 320;
-
 @implementation BRGBall
 
 -(BRGBall *)initAt:(CGPoint)position {
@@ -25,7 +23,11 @@ static const int kBallSpeed = 320;
         _sprite = [SKSpriteNode spriteNodeWithTexture:[textureAtlas textureNamed:colours[index]]];
         _sprite.zPosition = 1;
         _sprite.position = position;
-        _sprite.anchorPoint = CGPointMake(0, 0);
+        
+        _sprite.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:_sprite.frame.size.width/2];
+        _sprite.physicsBody.restitution = .75f;
+        _sprite.physicsBody.mass = .25f;
+        //_sprite.physicsBody.friction =
         
         _isFalling = NO;
     }
@@ -33,14 +35,9 @@ static const int kBallSpeed = 320;
     return self;
 }
 
--(void)updatePosition:(CFTimeInterval)timeSinceLast {
-    if (_isFalling) {
-        _sprite.position = CGPointMake(_sprite.position.x, _sprite.position.y - kBallSpeed * timeSinceLast);
-    }
-}
-
 -(void)fall {
     _isFalling = YES;
+    [_sprite.physicsBody applyImpulse:CGVectorMake(0.0f, -1.0f)];
 //    
 //    SKAction *easeMoveDown = [SKAction moveToY:0 duration:1.0f];  // por ahora va hacia 0
 //    easeMoveDown.timingMode = SKActionTimingEaseInEaseOut;
@@ -52,7 +49,7 @@ static const int kBallSpeed = 320;
 -(void)stopFall {
     _isFalling = NO;
     //[_sprite removeAllActions];
-    _sprite.position = CGPointMake(_sprite.position.x, (((int)_sprite.position.y / kBallSize) + 1) * kBallSize);
+    // _sprite.position = CGPointMake(_sprite.position.x, (((int)_sprite.position.y / kBallSize) + 1) * kBallSize);
 }
 
 @end

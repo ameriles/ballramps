@@ -13,7 +13,6 @@ static const int kLevelMargin = 52;
 @implementation BRGLevel {
     SKScene *_scene;
     float _ballStartY;
-    SKSpriteNode *_bottom;
     CFTimeInterval _lastUpdateTimeInterval;
 }
 
@@ -22,12 +21,14 @@ static const int kLevelMargin = 52;
         _scene = scene;
         _number = number;
         _ballStartY = CGRectGetMaxY(scene.frame);
+
+        SKPhysicsBody *borderBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:_scene.frame];
+        _scene.physicsBody = borderBody;
+        //_scene.physicsWorld.gravity = CGVectorMake(0.0f, -2.0f);
         
         // TODO optimizar con manager de atlas o backgrounds
         SKTextureAtlas *backgroundAtlas = [[BRGDeviceHelper sharedHelper] textureAtlasNamed:@"backgrounds"];
         SKSpriteNode *background = [SKSpriteNode spriteNodeWithTexture:[backgroundAtlas textureNamed:@"city_bg"]];
-        
-        _bottom = [SKSpriteNode spriteNodeWithTexture:[backgroundAtlas textureNamed:@"bottom"]];
         
         _balls = [NSMutableArray array];
         
@@ -35,13 +36,8 @@ static const int kLevelMargin = 52;
         background.position = CGPointMake(CGRectGetMidX(scene.frame), CGRectGetMidY(scene.frame));
         background.zPosition = 0;
         
-        _bottom.anchorPoint = CGPointMake(.5f, 0);
-        _bottom.position = CGPointMake(CGRectGetMidX(scene.frame), 0);
-        _bottom.zPosition = 1;
-        
         [scene addChild:background];
-        [scene addChild:_bottom];
-        
+
         [self prepareAnotherBall];
     }
     
@@ -57,35 +53,33 @@ static const int kLevelMargin = 52;
 }
 
 -(void)updateBall:(CFTimeInterval)currentTime {
-    CFTimeInterval timeSinceLast = currentTime - _lastUpdateTimeInterval;
-    _lastUpdateTimeInterval = currentTime;
-    
-    if (timeSinceLast > 1) { // more than a second since last update
-        timeSinceLast = 1.0 / 60.0;
-    }
-    
-    // Actualiza la posición del sprite de la bola
-    [_currentBall updatePosition: timeSinceLast];
-    
-    // Verifica si hay interseccion de la bola que cae con las del nivel
-    if ([_currentBall.sprite intersectsNode:_bottom]) {
-        [self prepareAnotherBall];
-        return;
-    }
-    
-    for (BRGBall *ball in self.balls) {
-        if ([_currentBall.sprite intersectsNode:ball.sprite]) {
-            [self prepareAnotherBall];
-            return;
-        }
-    }
+//    CFTimeInterval timeSinceLast = currentTime - _lastUpdateTimeInterval;
+//    _lastUpdateTimeInterval = currentTime;
+//    
+//    if (timeSinceLast > 1) { // more than a second since last update
+//        timeSinceLast = 1.0 / 60.0;
+//    }
+//    
+//    // Actualiza la posición del sprite de la bola
+//    [_currentBall updatePosition: timeSinceLast];
+//    
+//    // Verifica si hay interseccion de la bola que cae con las del nivel
+//    if ([_currentBall.sprite intersectsNode:_bottom]) {
+//        [self prepareAnotherBall];
+//        return;
+//    }
+//    
+//    for (BRGBall *ball in self.balls) {
+//        if ([_currentBall.sprite intersectsNode:ball.sprite]) {
+//            [self prepareAnotherBall];
+//            return;
+//        }
+//    }
 }
 
 -(BOOL)isBallSetToFall {
     return [_currentBall isSetToFall];
 }
-
-#pragma mark - Private Methods
 
 -(void)prepareAnotherBall {
     if (_currentBall) {
@@ -100,6 +94,7 @@ static const int kLevelMargin = 52;
     [_scene addChild:_currentBall.sprite];
 }
 
+#pragma mark - Private Methods
 -(CGPoint)randomStartPoint {
     int x = (arc4random_uniform(9) * kBallSize) + kLevelMargin;
     return CGPointMake((float)x, _ballStartY);

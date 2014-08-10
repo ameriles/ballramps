@@ -26,4 +26,6 @@
 
 -(BOOL)isBallSetToFall;
 
+-(void)prepareAnotherBall;
+
 @end
