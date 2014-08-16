@@ -12,11 +12,9 @@
 @interface BRGBall : NSObject
 
 @property (strong, nonatomic, readonly) SKSpriteNode *sprite;
-@property (nonatomic) BOOL isFalling;
-@property (nonatomic) BOOL isSetToFall;
 
 -(BRGBall *)initAt:(CGPoint)position;
 -(void)fall;
--(void)stopFall;
+-(BOOL)isResting;
 
 @end

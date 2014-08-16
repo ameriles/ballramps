@@ -17,7 +17,7 @@
             colours = @[@"ball", @"ball_blue", @"ball_green"];
         }
         
-        int index = arc4random_uniform(3);
+        int index = arc4random_uniform([colours count]);
         
         SKTextureAtlas *textureAtlas = [[BRGDeviceHelper sharedHelper] textureAtlasNamed:@"sprites"];
         _sprite = [SKSpriteNode spriteNodeWithTexture:[textureAtlas textureNamed:colours[index]]];
@@ -25,31 +25,20 @@
         _sprite.position = position;
         
         _sprite.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:_sprite.frame.size.width/2];
-        _sprite.physicsBody.restitution = .75f;
+        _sprite.physicsBody.restitution = .5f;
         _sprite.physicsBody.mass = .25f;
         //_sprite.physicsBody.friction =
-        
-        _isFalling = NO;
     }
     
     return self;
 }
 
 -(void)fall {
-    _isFalling = YES;
-    [_sprite.physicsBody applyImpulse:CGVectorMake(0.0f, -1.0f)];
-//    
-//    SKAction *easeMoveDown = [SKAction moveToY:0 duration:1.0f];  // por ahora va hacia 0
-//    easeMoveDown.timingMode = SKActionTimingEaseInEaseOut;
-//    [_sprite runAction:easeMoveDown completion:^{
-//        //[self stopFall];
-//    }];
+    [_sprite.physicsBody applyImpulse:CGVectorMake(0.0f, -.1f)];
 }
 
--(void)stopFall {
-    _isFalling = NO;
-    //[_sprite removeAllActions];
-    // _sprite.position = CGPointMake(_sprite.position.x, (((int)_sprite.position.y / kBallSize) + 1) * kBallSize);
+-(BOOL)isResting {
+    return fabsf(_sprite.physicsBody.velocity.dx) <= 0.1f && fabsf(_sprite.physicsBody.velocity.dy) <= 0.1f;
 }
 
 @end

@@ -22,28 +22,43 @@
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
-//    if ([self.currentLevel hasFallingBall]) {
-//        return;
-//    } else if ([self.currentLevel isBallSetToFall]) {
-//        [self.currentLevel shootBall];
-//    }
     
-    [self.currentLevel prepareAnotherBall];
+    // Create ramp
+    if (![self.currentLevel isSettingRamp]) {
+        UITouch *touch = [touches anyObject];
+        CGPoint point = [touch locationInNode: self];
+        
+        [self.currentLevel setRamp: point];
+    }
     
-    
-    // si el cañon está presto para disparar, es el momento para dibujar las rampas
-//    UITouch *touch = [touches anyObject];
-//    CGPoint point = [touch locationInNode:self];
-//    NSLog(@"%f %f", point.x, point.y);
+    // Ball
+    if ([self.currentLevel isReadyForNewBall]) {
+        [self.currentLevel prepareAnotherBall];
+        [self.currentLevel shootBall];
+    }
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+    if ([self.currentLevel isSettingRamp]) {
+        UITouch *touch = [touches anyObject];
+        CGPoint point = [touch locationInNode: self];
+        [self.currentLevel moveRamp:point];
+    }
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if ([self.currentLevel isSettingRamp]) {
+        UITouch *touch = [touches anyObject];
+        CGPoint point = [touch locationInNode: self];
+        [self.currentLevel finishRamp:point];
+    }
 }
 
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
     //[self.currentLevel updateBall: currentTime];
+    
+    [self.currentLevel checkBall];
 }
 
 @end

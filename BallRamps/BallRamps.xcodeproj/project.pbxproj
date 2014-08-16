@@ -30,6 +30,7 @@
 		FB26BDCF195FA8EC0063B977 /* BRGLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FB26BDCE195FA8EC0063B977 /* BRGLevel.m */; };
 		FB26BDD4195FA9880063B977 /* BRGDeviceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FB26BDD3195FA9880063B977 /* BRGDeviceHelper.m */; };
 		FB26BDD7195FB26B0063B977 /* BRGBall.m in Sources */ = {isa = PBXBuildFile; fileRef = FB26BDD6195FB26B0063B977 /* BRGBall.m */; };
+		FBB628E6199F74360038405F /* BRGRamp.m in Sources */ = {isa = PBXBuildFile; fileRef = FBB628E5199F74360038405F /* BRGRamp.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,8 @@
 		FB26BDD3195FA9880063B977 /* BRGDeviceHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRGDeviceHelper.m; sourceTree = "<group>"; };
 		FB26BDD5195FB26B0063B977 /* BRGBall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRGBall.h; sourceTree = "<group>"; };
 		FB26BDD6195FB26B0063B977 /* BRGBall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRGBall.m; sourceTree = "<group>"; };
+		FBB628E4199F74360038405F /* BRGRamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRGRamp.h; sourceTree = "<group>"; };
+		FBB628E5199F74360038405F /* BRGRamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRGRamp.m; sourceTree = "<group>"; };
 		FBC57B3119681B6D005B6C17 /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -217,6 +220,8 @@
 				FB26BDCE195FA8EC0063B977 /* BRGLevel.m */,
 				FB26BDD5195FB26B0063B977 /* BRGBall.h */,
 				FB26BDD6195FB26B0063B977 /* BRGBall.m */,
+				FBB628E4199F74360038405F /* BRGRamp.h */,
+				FBB628E5199F74360038405F /* BRGRamp.m */,
 			);
 			name = GameModel;
 			sourceTree = "<group>";
@@ -339,6 +344,7 @@
 				FB26BD94195F99800063B977 /* main.m in Sources */,
 				FB26BDA1195F99800063B977 /* BRGMyScene.m in Sources */,
 				FB26BD9E195F99800063B977 /* BRGViewController.m in Sources */,
+				FBB628E6199F74360038405F /* BRGRamp.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

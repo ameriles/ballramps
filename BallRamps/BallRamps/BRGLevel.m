@@ -14,6 +14,7 @@ static const int kLevelMargin = 52;
     SKScene *_scene;
     float _ballStartY;
     CFTimeInterval _lastUpdateTimeInterval;
+    BRGRamp *_ramp;
 }
 
 -(BRGLevel *)initInScene: (SKScene *)scene withNumber:(NSInteger)number andBackgroundNamed:(NSString *)bgName {
@@ -37,62 +38,51 @@ static const int kLevelMargin = 52;
         background.zPosition = 0;
         
         [scene addChild:background];
-
-        [self prepareAnotherBall];
+        
+        _isReadyForNewBall = YES;
     }
     
     return self;
 }
 
--(BOOL)hasFallingBall {
-    return [_currentBall isFalling];
-}
-
 -(void)shootBall {
     [_currentBall fall];
+    _isReadyForNewBall = NO;
 }
 
--(void)updateBall:(CFTimeInterval)currentTime {
-//    CFTimeInterval timeSinceLast = currentTime - _lastUpdateTimeInterval;
-//    _lastUpdateTimeInterval = currentTime;
-//    
-//    if (timeSinceLast > 1) { // more than a second since last update
-//        timeSinceLast = 1.0 / 60.0;
-//    }
-//    
-//    // Actualiza la posición del sprite de la bola
-//    [_currentBall updatePosition: timeSinceLast];
-//    
-//    // Verifica si hay interseccion de la bola que cae con las del nivel
-//    if ([_currentBall.sprite intersectsNode:_bottom]) {
-//        [self prepareAnotherBall];
-//        return;
-//    }
-//    
-//    for (BRGBall *ball in self.balls) {
-//        if ([_currentBall.sprite intersectsNode:ball.sprite]) {
-//            [self prepareAnotherBall];
-//            return;
-//        }
-//    }
+-(void)checkBall {
+    if ([_currentBall isResting]) {
+        [_balls addObject:_currentBall];
+        _isReadyForNewBall = YES;
+        _currentBall = nil;
+    }
 }
 
--(BOOL)isBallSetToFall {
-    return [_currentBall isSetToFall];
+// Añade el ramp
+-(void)setRamp:(CGPoint)origin {
+    _ramp = [[BRGRamp alloc] initAt:origin];
+    [_scene addChild:_ramp.sprite];
+    _isSettingRamp = YES;
+}
+
+-(void)moveRamp:(CGPoint)destination {
+    [_ramp move:destination];
+}
+
+-(void)finishRamp:(CGPoint)destination {
+    [self moveRamp: destination];
+    //_isSettingRamp = NO;
 }
 
 -(void)prepareAnotherBall {
-    if (_currentBall) {
-        [_currentBall stopFall];
-        [self.balls addObject:_currentBall];
-    }
-        
     _currentBall = [[BRGBall alloc] initAt:[self randomStartPoint]];
-    _currentBall.isSetToFall = YES;
     
     // Add sprite to scene
     [_scene addChild:_currentBall.sprite];
 }
+
+// TODO Agregar un event handler para detectar que la bola toco el fondo y está en reposo.
+// entonces poner _isReadyForNewBall = YES y agregar a la bola a la coleccion
 
 #pragma mark - Private Methods
 -(CGPoint)randomStartPoint {
