@@ -27,10 +27,10 @@
 
 -(void)prepareAnotherBall;
 
--(void)setRamp:(CGPoint)origin;
+-(void)setRamp:(CGPoint)position;
 
--(void)moveRamp:(CGPoint)destination;
+-(void)rotateRamp:(CGPoint)position;
 
--(void)finishRamp:(CGPoint)destination;
+-(void)finishRamp:(CGPoint)position;
 
 @end

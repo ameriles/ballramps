@@ -30,6 +30,7 @@ static const int kLevelMargin = 52;
         // TODO optimizar con manager de atlas o backgrounds
         SKTextureAtlas *backgroundAtlas = [[BRGDeviceHelper sharedHelper] textureAtlasNamed:@"backgrounds"];
         SKSpriteNode *background = [SKSpriteNode spriteNodeWithTexture:[backgroundAtlas textureNamed:@"city_bg"]];
+        SKSpriteNode *tubes = [SKSpriteNode spriteNodeWithTexture:[backgroundAtlas textureNamed:@"tubes"]];
         
         _balls = [NSMutableArray array];
         
@@ -37,7 +38,24 @@ static const int kLevelMargin = 52;
         background.position = CGPointMake(CGRectGetMidX(scene.frame), CGRectGetMidY(scene.frame));
         background.zPosition = 0;
         
+        tubes.position = CGPointMake(kLevelMargin + (tubes.frame.size.width / 2) - (kBallSize / 2), tubes.frame.size.height/2);
+        tubes.zPosition = 2;
+        
+        float baseX = kLevelMargin - (kBallSize / 2);
+        for (int i = 1; i <= 10; i++) {
+            SKNode *node = [[SKNode alloc] init];
+            node.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(baseX, 0) toPoint:CGPointMake(baseX, tubes.frame.size.height)];
+            node.physicsBody.affectedByGravity = NO;
+            node.physicsBody.mass = 1000000.0f;
+            [scene addChild:node];
+            
+            baseX += (kBallSize + 3); // TODO MAGIC NUMBER 3. SEPARATION OF TUBES
+        }
+        
+        
         [scene addChild:background];
+        [scene addChild:tubes];
+        
         
         _isReadyForNewBall = YES;
     }
@@ -59,19 +77,24 @@ static const int kLevelMargin = 52;
 }
 
 // Añade el ramp
--(void)setRamp:(CGPoint)origin {
-    _ramp = [[BRGRamp alloc] initAt:origin];
-    [_scene addChild:_ramp.sprite];
+-(void)setRamp:(CGPoint)position {
+    if (!_ramp) {
+        _ramp = [[BRGRamp alloc] initAt:position];
+       [_scene addChild:_ramp.sprite];
+    } else {
+        [_ramp setAt: position];
+    }
+
     _isSettingRamp = YES;
 }
 
--(void)moveRamp:(CGPoint)destination {
-    [_ramp move:destination];
+-(void)rotateRamp:(CGPoint)position {
+    [_ramp rotate:position];
 }
 
--(void)finishRamp:(CGPoint)destination {
-    [self moveRamp: destination];
-    //_isSettingRamp = NO;
+-(void)finishRamp:(CGPoint)position {
+    [self rotateRamp: position];
+    _isSettingRamp = NO;
 }
 
 -(void)prepareAnotherBall {
@@ -86,7 +109,8 @@ static const int kLevelMargin = 52;
 
 #pragma mark - Private Methods
 -(CGPoint)randomStartPoint {
-    int x = (arc4random_uniform(9) * kBallSize) + kLevelMargin;
+    int x = (arc4random_uniform(9) * (kBallSize + 3)) + kLevelMargin;
+    NSLog(@"ball shot at x: %d", x);
     return CGPointMake((float)x, _ballStartY);
 }
 @end

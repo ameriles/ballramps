@@ -15,6 +15,8 @@
 
 -(BRGRamp *)initAt:(CGPoint)position;
 
--(void)move:(CGPoint)destination;
+-(void)rotate:(CGPoint)position;
+
+-(void)setAt:(CGPoint)position;
 
 @end

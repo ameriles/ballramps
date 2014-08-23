@@ -30,19 +30,13 @@
         
         [self.currentLevel setRamp: point];
     }
-    
-    // Ball
-    if ([self.currentLevel isReadyForNewBall]) {
-        [self.currentLevel prepareAnotherBall];
-        [self.currentLevel shootBall];
-    }
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     if ([self.currentLevel isSettingRamp]) {
         UITouch *touch = [touches anyObject];
         CGPoint point = [touch locationInNode: self];
-        [self.currentLevel moveRamp:point];
+        [self.currentLevel rotateRamp:point];
     }
 }
 
@@ -57,6 +51,12 @@
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
     //[self.currentLevel updateBall: currentTime];
+    
+    // Ball
+    if ([self.currentLevel isReadyForNewBall]) {
+        [self.currentLevel prepareAnotherBall];
+        [self.currentLevel shootBall];
+    }
     
     [self.currentLevel checkBall];
 }

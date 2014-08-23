@@ -16,7 +16,6 @@
         SKTextureAtlas *textureAtlas = [[BRGDeviceHelper sharedHelper] textureAtlasNamed:@"sprites"];
         _sprite = [SKSpriteNode spriteNodeWithTexture:[textureAtlas textureNamed:@"table"]];
         _sprite.zPosition = 1;
-        _sprite.anchorPoint = CGPointMake(0.5f, 0.5f);
         _sprite.position = position;
         
         _sprite.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_sprite.frame.size];
@@ -30,15 +29,22 @@
     return self;
 }
 
--(void)move:(CGPoint)destination {
-    float catOp = destination.y - _sprite.position.y;
-    float catAdy = destination.x - _sprite.position.x;
+-(void)rotate:(CGPoint)position {
+    float catOp = position.y - _sprite.position.y;
+    float catAdy = position.x - _sprite.position.x;
+    if (catAdy == 0)
+        return;
+    
     float tan = catOp / catAdy;
     float angle = atanf(tan);
     
     _sprite.zRotation = angle;
     
-    NSLog(@"moving %f, %f : %f", destination.x, destination.y, angle);
+    NSLog(@"moving %f, %f : %f", position.x, position.y, angle);
+}
+
+-(void)setAt:(CGPoint)position {
+    _sprite.position = position;
 }
 
 @end
