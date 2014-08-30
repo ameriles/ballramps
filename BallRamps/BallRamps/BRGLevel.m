@@ -9,6 +9,7 @@
 #import "BRGLevel.h"
 
 static const int kLevelMargin = 52;
+static const int kTubesCount = 9;
 
 @implementation BRGLevel {
     SKScene *_scene;
@@ -23,8 +24,9 @@ static const int kLevelMargin = 52;
         _number = number;
         _ballStartY = CGRectGetMaxY(scene.frame);
 
-        SKPhysicsBody *borderBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:_scene.frame];
-        _scene.physicsBody = borderBody;
+        //SKPhysicsBody *borderBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:_scene.frame];
+        //_scene.physicsBody = borderBody;
+        
         //_scene.physicsWorld.gravity = CGVectorMake(0.0f, -2.0f);
         
         // TODO optimizar con manager de atlas o backgrounds
@@ -41,8 +43,25 @@ static const int kLevelMargin = 52;
         tubes.position = CGPointMake(kLevelMargin + (tubes.frame.size.width / 2) - (kBallSize / 2), tubes.frame.size.height/2);
         tubes.zPosition = 2;
         
+        // The X offset
         float baseX = kLevelMargin - (kBallSize / 2);
-        for (int i = 1; i <= 10; i++) {
+
+        // The screen limits: |  _  |
+        SKNode *left = [[SKNode alloc] init];
+        left.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(0, 0) toPoint:CGPointMake(0, scene.frame.size.height)];
+        
+        SKNode *right = [[SKNode alloc] init];
+        right.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(scene.frame.size.width, 0) toPoint:CGPointMake(scene.frame.size.width, scene.frame.size.height)];
+        
+        SKNode *floor = [[SKNode alloc] init];
+        floor.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(baseX, 0) toPoint:CGPointMake((kBallSize + 3) * (kTubesCount + 1), 0)];
+        
+        [scene addChild:left];
+        [scene addChild:right];
+        [scene addChild:floor];
+
+        // The tubes physics walls
+        for (int i = 0; i < kTubesCount + 1; i++) {
             SKNode *node = [[SKNode alloc] init];
             node.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(baseX, 0) toPoint:CGPointMake(baseX, tubes.frame.size.height)];
             node.physicsBody.affectedByGravity = NO;
@@ -52,10 +71,8 @@ static const int kLevelMargin = 52;
             baseX += (kBallSize + 3); // TODO MAGIC NUMBER 3. SEPARATION OF TUBES
         }
         
-        
         [scene addChild:background];
         [scene addChild:tubes];
-        
         
         _isReadyForNewBall = YES;
     }
@@ -71,6 +88,9 @@ static const int kLevelMargin = 52;
 -(void)checkBall {
     if ([_currentBall isResting]) {
         [_balls addObject:_currentBall];
+        _isReadyForNewBall = YES;
+        _currentBall = nil;
+    } else if ([self ballOutOfRange: _currentBall]) {
         _isReadyForNewBall = YES;
         _currentBall = nil;
     }
@@ -108,8 +128,13 @@ static const int kLevelMargin = 52;
 // entonces poner _isReadyForNewBall = YES y agregar a la bola a la coleccion
 
 #pragma mark - Private Methods
+
+-(BOOL) ballOutOfRange: (BRGBall *)ball {
+    return ball.sprite.position.y < -50;
+}
+
 -(CGPoint)randomStartPoint {
-    int x = (arc4random_uniform(9) * (kBallSize + 3)) + kLevelMargin;
+    int x = (arc4random_uniform(kTubesCount) * (kBallSize + 3)) + kLevelMargin;
     NSLog(@"ball shot at x: %d", x);
     return CGPointMake((float)x, _ballStartY);
 }
